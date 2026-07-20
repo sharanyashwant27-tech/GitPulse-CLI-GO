@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitPulse — Docs</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --fg: #e7ecf3;
+      --accent: #7aa2f7;
+      --muted: #8b9bb4;
+      --line: #243044;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2a44 0%, var(--bg) 55%);
+      color: var(--fg);
+      min-height: 100vh;
+    }
+    header {
+      padding: 2.5rem 1.5rem 1rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .tagline { color: var(--muted); margin-top: 0.5rem; }
+    .actions { margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    a.btn {
+      display: inline-block;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      color: var(--fg);
+      background: var(--panel);
+    }
+    a.btn.primary {
+      background: var(--accent);
+      color: #0b1220;
+      border-color: transparent;
+      font-weight: 650;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    #readme {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+    #readme h1, #readme h2, #readme h3 { color: var(--accent); }
+    #readme pre, #readme code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #0d121a;
+    }
+    #readme pre {
+      padding: 1rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+    }
+    #readme code { padding: 0.1rem 0.35rem; border-radius: 4px; }
+    #readme pre code { padding: 0; background: transparent; }
+    #readme a { color: #7dcfff; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin: 0.75rem 0 1.25rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GitPulse</h1>
+    <p class="tagline">Production-grade Go CLI for interactive Git analytics — including advanced features roadmap.</p>
+    <div class="actions">
+      <a class="btn primary" href="#readme">Read the docs</a>
+      <a class="btn" href="/README.md">Raw README.md</a>
+      <a class="btn" href="https://github.com/sharanyashwant27-tech/GitPulse-CLI-GO" rel="noopener">GitHub</a>
+    </div>
+    <p class="meta">Serving on <strong>localhost:8098</strong> via Docker · image <code>gitpulse:docs</code></p>
+  </header>
+  <main>
+    <article id="readme">Loading README…</article>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    fetch('/README.md')
+      .then((r) => r.text())
+      .then((md) => {
+        document.getElementById('readme').innerHTML = marked.parse(md);
+      })
+      .catch((err) => {
+        document.getElementById('readme').textContent = 'Failed to load README.md: ' + err;
+      });
+  </script>
+</body>
+</html>

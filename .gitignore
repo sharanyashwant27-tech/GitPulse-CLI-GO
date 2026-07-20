@@ -1,0 +1,26 @@
+# Binaries
+bin/
+gitpulse
+gitpulse.exe
+*.exe
+*.test
+*.out
+
+# Reports / coverage
+reports/*
+!reports/.gitkeep
+coverage.out
+coverage.html
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local config overrides
+.gitpulse.local.yaml
+
+# Vendor (optional)
+vendor/

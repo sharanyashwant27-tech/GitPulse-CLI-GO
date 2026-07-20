@@ -1,0 +1,9 @@
+# GitPulse configuration (project-local)
+# Override with flags or GITPULSE_* environment variables.
+
+repo: .
+theme: default
+log_level: info
+watch_interval: 5s
+export_dir: reports
+limit: 20

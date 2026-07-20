@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ["1.25.x", "1.26.x"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Download modules
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./... -race -count=1 -coverprofile=coverage.out
+
+      - name: Build
+        run: go build -o gitpulse .
+
+      - name: Smoke commands
+        run: |
+          ./gitpulse --help
+          ./gitpulse commands
+          ./gitpulse themes
+          ./gitpulse stats -r .
+          ./gitpulse commits -r .
+          ./gitpulse health -r .
+          ./gitpulse export html -o ci-smoke -r .
+          ./gitpulse export json -o ci-smoke-json -r .
+          test -f reports/ci-smoke.html
+          test -f reports/ci-smoke-json.json
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: latest
+          args: --timeout=5m
+
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t gitpulse:ci .

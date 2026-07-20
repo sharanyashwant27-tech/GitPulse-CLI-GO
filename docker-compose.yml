@@ -1,0 +1,24 @@
+services:
+  gitpulse-docs:
+    build:
+      context: .
+      target: docs
+    image: gitpulse:docs
+    container_name: gitpulse-docs
+    ports:
+      - "8098:8098"
+    restart: unless-stopped
+
+  gitpulse-cli:
+    build:
+      context: .
+      target: runtime
+    image: gitpulse:cli
+    container_name: gitpulse-cli
+    volumes:
+      - ./:/repo:ro
+      - ./reports:/app/reports
+    working_dir: /repo
+    profiles: ["cli"]
+    entrypoint: ["gitpulse"]
+    command: ["stats", "-r", "/repo"]
