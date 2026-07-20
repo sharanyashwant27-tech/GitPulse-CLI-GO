@@ -1,5 +1,7 @@
 # GitPulse
 
+[![CI](https://github.com/sharanyashwant27-tech/GitPulse-CLI-GO/actions/workflows/ci.yml/badge.svg)](https://github.com/sharanyashwant27-tech/GitPulse-CLI-GO/actions/workflows/ci.yml)
+
 **Interactive Git repository analytics for your terminal.**
 
 GitPulse is a production-grade Go CLI that inspects local Git repositories with [go-git](https://github.com/go-git/go-git), renders colorful dashboards with [Bubble Tea](https://github.com/charmbracelet/bubbletea) + [Lip Gloss](https://github.com/charmbracelet/lipgloss), and exports reports to HTML, JSON, CSV, and PDF.
@@ -92,7 +94,7 @@ GitPulse is a production-grade Go CLI that inspects local Git repositories with 
 | Code churn analysis | Planned |
 | Large file detection | Planned |
 | Interactive fuzzy search | Planned |
-| Keyboard shortcuts | Planned |
+| Keyboard shortcuts | Partial (dashboard: Tab / arrows, `j`/`k`, PgUp/PgDn, `r` refresh, `q` quit) |
 | Auto-update checker | Planned |
 
 ---
@@ -130,10 +132,27 @@ go install github.com/sharanyashwant27-tech/GitPulse-CLI-GO@latest
 
 ### Docker (CLI)
 
+Build the runtime image (Go **1.25** builder → Alpine runtime):
+
 ```bash
 docker build --target runtime -t gitpulse:cli .
 docker run --rm -v "$PWD":/repo -w /repo gitpulse:cli stats -r /repo
 ```
+
+Or via Compose (`cli` profile):
+
+```bash
+docker compose --profile cli run --rm gitpulse-cli stats -r /repo
+```
+
+### Docker (docs)
+
+```bash
+docker compose up --build -d gitpulse-docs
+# open http://localhost:8098
+```
+
+Image: `gitpulse:docs` (nginx) — serves this README, including **Advanced Features**.
 
 ---
 
@@ -611,28 +630,39 @@ make run       # interactive dashboard
 ### Tests & CI
 
 - Unit tests cover git analysis, health, dashboard widgets/charts, themes, config, and exporter
-- GitHub Actions (`.github/workflows/ci.yml`): vet, race tests, build, smoke commands, golangci-lint, Docker image build
+- GitHub Actions ([CI workflow](https://github.com/sharanyashwant27-tech/GitPulse-CLI-GO/actions)): Go **1.25.x** / **1.26.x** matrix (vet, race tests, build, smoke), golangci-lint **v2**, Docker image build
+- Lint config: [`.golangci.yml`](.golangci.yml) (`version: "2"`)
 
 ---
 
 ## Docs site on localhost:8098
 
-Serve the updated README via Docker:
+Serve this README via the Docker docs image:
 
 ```bash
-docker compose up --build -d
+docker compose up --build -d gitpulse-docs
 # open http://localhost:8098
 ```
 
-This builds the `docs` stage of the Dockerfile (`gitpulse:docs`) — an nginx image that hosts the rendered README and static assets on port **8098**.
+| Item | Value |
+|------|--------|
+| Image | `gitpulse:docs` |
+| Stage | `docs` in [`Dockerfile`](Dockerfile) |
+| Port | **8098** |
+| Content | Rendered `README.md` + `assets/` + `templates/` |
 
 ```bash
-# Rebuild after README changes
+# Rebuild after README or docker/ changes
 docker compose up --build -d gitpulse-docs
 
-# Stop
+# CLI image (optional)
+docker build --target runtime -t gitpulse:cli .
+
+# Stop docs
 docker compose down
 ```
+
+Repository: [sharanyashwant27-tech/GitPulse-CLI-GO](https://github.com/sharanyashwant27-tech/GitPulse-CLI-GO)
 
 ---
 
