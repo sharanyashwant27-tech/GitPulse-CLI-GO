@@ -85,13 +85,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.loading = true
 			return m, m.loadAnalysis()
 		case "j", "down":
-			m.viewport.LineDown(1)
+			m.viewport.ScrollDown(1)
 		case "k", "up":
-			m.viewport.LineUp(1)
+			m.viewport.ScrollUp(1)
 		case "pgdown", "f":
-			m.viewport.ViewDown()
+			m.viewport.PageDown()
 		case "pgup", "b":
-			m.viewport.ViewUp()
+			m.viewport.PageUp()
 		}
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
